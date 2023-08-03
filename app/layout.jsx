@@ -1,5 +1,8 @@
 import '@styles/global.css';
 
+import Nav from "@components/Nav";
+import Provider from "@components/Provider";
+
 export const metadata = {
 	title: 'Promtopia',
 	description: 'Discover & Share AI Prompts'
@@ -14,6 +17,7 @@ const RootLayout = ({children}) => {
 				</div>
 
 			<main className="app">
+				<Nav />
 				{children}
 			</main>
 			</body>
