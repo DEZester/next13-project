@@ -30,8 +30,6 @@ const Feed = () => {
   }
 
   useEffect(() => {
-
-
     fetchPosts()
   }, [])
 
