@@ -12,14 +12,15 @@ const MyProfile = () => {
   const router = useRouter()
   const [posts, setPosts] = useState([]);
   const {data: session} = useSession()
-  const fetchPosts = async () => {
-    const response = await fetch(`/api/users/${session?.user.id}/posts`)
-    const data = await response.json()
 
-    setPosts(data)
-  }
 
   useEffect(() => {
+    const fetchPosts = async () => {
+      const response = await fetch(`/api/users/${session?.user.id}/posts`)
+      const data = await response.json()
+
+      setPosts(data)
+    }
     if (session?.user.id) fetchPosts()
   }, [])
 
