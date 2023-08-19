@@ -1,41 +1,55 @@
 'use client'
 
 import React from 'react'
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import {useSession} from "next-auth/react";
+import {useEffect, useState} from "react";
+import {useRouter} from "next/navigation";
 
 import Profile from "@components/Profile";
 
 
 const MyProfile = () => {
-	const [posts, setPosts] = useState([]);
-	const {data: session} = useSession()
-	const fetchPosts = async () => {
-		const response = await fetch(`/api/users/${session?.user.id}/posts`)
-		const data = await response.json()
+  const router = useRouter()
+  const [posts, setPosts] = useState([]);
+  const {data: session} = useSession()
+  const fetchPosts = async () => {
+    const response = await fetch(`/api/users/${session?.user.id}/posts`)
+    const data = await response.json()
 
-		setPosts(data)
-	}
+    setPosts(data)
+  }
 
-	useEffect(() => {
-		if (session?.user.id) fetchPosts()
-	}, [])
+  useEffect(() => {
+    if (session?.user.id) fetchPosts()
+  }, [])
 
-	const handleEdit = async () => {
+  const handleEdit = async (post) => {
+    router.push(`/update-prompt?id=${post._id}`)
+  }
+  const handleDelete = async (post) => {
+    const hasConfirmed = confirm('Do you want to delete this prompt?')
 
-	}
-	const handleDelete = async () => {
+    if (hasConfirmed) {
+      try {
+        await fetch(`/api/prompt/${post._id.toString()}`, {
+          method: "DELETE",
+        });
 
-	}
+        const filteredPosts = posts.filter((p) => p._id !== post._id)
+        setPosts(filteredPosts)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
 
-	return (
-		<Profile name='My'
-			desc='welcome to your profile'
-			data={posts}
-			handleEdit={handleEdit}
-			handleDelete={handleDelete}
-		/>
-	)
+  return (
+    <Profile name='My'
+             desc='welcome to your profile'
+             data={posts}
+             handleEdit={handleEdit}
+             handleDelete={handleDelete}
+    />
+  )
 }
 export default MyProfile
